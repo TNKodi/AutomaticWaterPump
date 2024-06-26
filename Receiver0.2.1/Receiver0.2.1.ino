@@ -1,5 +1,5 @@
 #include "RF24.h"
-#define CE_PIN 10
+#define CE_PIN 10       //==================================================
 #define CSN_PIN 9
 
 #define ds 0
