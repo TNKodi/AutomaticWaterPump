@@ -170,66 +170,66 @@ void loop() {
     digitalWrite(buzzer, LOW);
   }
 }
-<<<<<<< HEAD
-=======
-void indicator(int level) {
-  if (level == 11 && !level0_status) {
-    led(5);
-    level0_status = true;
-    digitalWrite(motorpin, HIGH);  //level 6
-    digitalWrite(buzzer, HIGH);    //level 5
-    delay(600);                    //
-    digitalWrite(buzzer, LOW);     //
-    delay(1000);                   //
-  } else if (level == 22) {         //level 4
-    led(5);                        //
-    led(0);                        //level 3
+// <<<<<<< HEAD
+// =======
+// void indicator(int level) {
+//   if (level == 11 && !level0_status) {
+//     led(5);
+//     level0_status = true;
+//     digitalWrite(motorpin, HIGH);  //level 6
+//     digitalWrite(buzzer, HIGH);    //level 5
+//     delay(600);                    //
+//     digitalWrite(buzzer, LOW);     //
+//     delay(1000);                   //
+//   } else if (level == 22) {         //level 4
+//     led(5);                        //
+//     led(0);                        //level 3
     
-  } else if (level == 33) {         //
-    led(5);                        //level 33
-    led(1);                        //
-  } else if (level == 44) {         //level 22
-    led(5);                        //level 11
-    led(2);
-    level0_status = false;
-  } else if (level == 55) {
-    led(5);
-    led(3);
-    level6_status = false;
-  } else if (level ==66 ) {
-    led(5);
-    led(4);
+//   } else if (level == 33) {         //
+//     led(5);                        //level 33
+//     led(1);                        //
+//   } else if (level == 44) {         //level 22
+//     led(5);                        //level 11
+//     led(2);
+//     level0_status = false;
+//   } else if (level == 55) {
+//     led(5);
+//     led(3);
+//     level6_status = false;
+//   } else if (level ==66 ) {
+//     led(5);
+//     led(4);
     
-  } else if (level == 77 && !level6_status) {
-    led(4);
-    level6_status = true;
-    digitalWrite(motorpin, LOW);
-    delay(100);
-    digitalWrite(buzzer, HIGH);
-    delay(300);
-    digitalWrite(buzzer, LOW);
-    delay(1000);
-  }
-}
+//   } else if (level == 77 && !level6_status) {
+//     led(4);
+//     level6_status = true;
+//     digitalWrite(motorpin, LOW);
+//     delay(100);
+//     digitalWrite(buzzer, HIGH);
+//     delay(300);
+//     digitalWrite(buzzer, LOW);
+//     delay(1000);
+//   }
+// }
 
 
 
-void nosignal(){
-  buzzr(100);
-  buzzr(300);
-  led(4);
-  delay(100);
-  led(5);
+// void nosignal(){
+//   buzzr(100);
+//   buzzr(300);
+//   led(4);
+//   delay(100);
+//   led(5);
 
 
-}
+// }
 
 
 
-void airflow(){
-  buzzr(100);
-  led(4);
-  delay(100);
-  led(5); 
-}
->>>>>>> ba55b72ebb980860d09824ce02d7fdcc03a6b6d2
+// void airflow(){
+//   buzzr(100);
+//   led(4);
+//   delay(100);
+//   led(5); 
+// }
+// >>>>>>> ba55b72ebb980860d09824ce02d7fdcc03a6b6d2
