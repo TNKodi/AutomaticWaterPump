@@ -137,5 +137,29 @@ By separating sensing and actuation into two modules, the system avoids running 
 Below are block diagrams and pin assignments. Adjust pin numbers in code if your wiring differs. All ATtiny84 pin references use the physical package names (e.g., PA0, PA1, PB2). Refer to your ATtiny84-pinout diagram when wiring.
 
 ### Transmitter Schematic
-
-
+```text
+                 ┌───────────────────────────────────┐
+                 │       ATtiny84 (14-pin)           │
+                 │                                   │
+                 │   ┌─────────────┐   ┌───────────┐ │
+                 │   │ Ultrasonic  │   │  nRF300   │ │
+                 │   │   HC-SR04   │   │  Module   │ │
+                 │   └─────────────┘   └───────────┘ │
+                 │                                   │
+                 │  PA0 (Pin  5) ──▶ TRIG of HC-SR04  │
+                 │  PA1 (Pin  6) ──▶ ECHO of HC-SR04  │
+                 │                                   │
+                 │  PB2 (Pin 12) ──▶ CE  of nRF300    │
+                 │  PB1 (Pin 11) ──▶ CSN of nRF300    │
+                 │  PB0 (Pin 10) ──▶ SCK of nRF300    │
+                 │  PA4 (Pin  3) ──▶ MOSI of nRF300   │
+                 │  PA5 (Pin  2) ──▶ MISO of nRF300   │
+                 │                                   │
+                 │  VCC (Pin  1) ──▶ 5 V supply       │
+                 │  GND (Pin 14) ──▶ GND supply       │
+                 │                                   │
+                 │  3.3 V Regulator  ──▶ nRF300 VCC   │
+                 │  GND (common)      ──▶ nRF300 GND   │
+                 └───────────────────────────────────┘
+````
+ff
