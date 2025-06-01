@@ -1,6 +1,6 @@
 # Automatic Water Pump Controller
 
-A collaborative project by Thisuka, Yasith, Heshan, and [Your Friend’s Name] that automates water-level monitoring and pump control using a wireless transmitter–receiver pair. The transmitter measures tank water level via an ultrasonic sensor, filters the reading on an MCU, and sends it over an nRF300 RF module. The receiver decodes the level, lights up one of five LEDs to indicate the approximate water level, and toggles a relay to turn the pump on or off.
+A collaborative project  that automates water-level monitoring and pump control using a wireless transmitter–receiver pair. The transmitter measures tank water level via an ultrasonic sensor, filters the reading on an MCU, and sends it over an nRF300 RF module. The receiver decodes the level, lights up one of five LEDs to indicate the approximate water level, and toggles a relay to turn the pump on or off.
 
 ---
 
