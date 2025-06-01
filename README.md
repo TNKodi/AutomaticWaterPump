@@ -1,84 +1,89 @@
-# Automatic Water Pump
+# Automatic Water Pump Controller
 
-> A brief description of the Automatic Water Pump project—what it does and why it’s useful.
+A collaborative project by Thisuka, Yasith, Heshan, and [Your Friend’s Name] that automates water-level monitoring and pump control using a wireless transmitter–receiver pair. The transmitter measures tank water level via an ultrasonic sensor, filters the reading on an MCU, and sends it over an nRF300 RF module. The receiver decodes the level, lights up one of five LEDs to indicate the approximate water level, and toggles a relay to turn the pump on or off.
+
+---
 
 ## Table of Contents
 
 1. [Overview](#overview)  
 2. [Features](#features)  
-3. [Hardware Requirements](#hardware-requirements)  
-4. [Software Requirements](#software-requirements)  
-5. [Wiring Diagram](#wiring-diagram)  
-6. [Installation](#installation)  
-7. [Configuration](#configuration)  
-8. [Usage](#usage)  
-9. [Troubleshooting](#troubleshooting)  
-10. [Contributing](#contributing)  
-11. [License](#license)  
+3. [System Architecture](#system-architecture)  
+4. [Hardware Requirements](#hardware-requirements)  
+   - [Transmitter Unit](#transmitter-unit)  
+   - [Receiver Unit](#receiver-unit)  
+5. [Software Requirements](#software-requirements)  
+6. [Wiring Diagrams](#wiring-diagrams)  
+   - [Transmitter Schematic](#transmitter-schematic)  
+   - [Receiver Schematic](#receiver-schematic)  
+7. [Installation & Setup](#installation--setup)  
+   - [Flashing Transmitter Firmware](#flashing-transmitter-firmware)  
+   - [Flashing Receiver Firmware](#flashing-receiver-firmware)  
+8. [Configuration](#configuration)  
+9. [Usage](#usage)  
+10. [Troubleshooting](#troubleshooting)  
+11. [Contributing](#contributing)  
+12. [License](#license)  
 
 ---
 
 ## Overview
 
-**Automatic Water Pump** is an embedded-IoT project that automatically controls a water pump based on sensor readings (e.g., soil moisture, water level) to ensure optimal water distribution. It’s designed for applications such as:
+This project implements an automated water-pump controller that consists of two separate PCB/modules:
 
-- Garden irrigation  
-- Water tank level management  
-- Hydroponics or smart-farm setups  
+- **Transmitter Unit** (installed near or inside the water tank):  
+  - Measures water depth with an ultrasonic sensor (HC-SR04).  
+  - Applies a simple moving-average filter on the MCU to smooth out spurious readings.  
+  - Packages the filtered water-level data and transmits it wirelessly using an nRF300 RF module.
 
-Describe here, in one or two sentences, the high-level purpose of your repository and why someone would want to use it.
+- **Receiver Unit** (installed near the pump):  
+  - Receives wireless packets from the transmitter via its paired nRF300 module.  
+  - Decodes the water-level value and illuminates one of five LEDs (representing 0–20%, 21–40%, 41–60%, 61–80%, and 81–100% of tank capacity).  
+  - Activates a relay to switch the water pump ON when the water level falls below a user-defined threshold (e.g., < 20%), and turns the pump OFF once the level exceeds another threshold (e.g., > 80%).
+
+By separating sensing and actuation into two modules, the system avoids running power cables or sensor wires down the tank to the pump. Instead, only a single short-range RF link (nRF300, 433/868 MHz) carries the water-level information.
 
 ---
 
 ## Features
 
-- **Automated Pump Control**: Turns the pump on/off based on real-time sensor data.  
-- **Configurable Thresholds**: Adjust water-level or moisture thresholds without changing firmware.  
-- **Low-Power Design**: Optimized to minimize power draw when idle.  
-- **Status Indicator**: LED or serial output shows current pump state.  
-- **Optional Remote Monitoring** (if applicable): Send status updates over Wi-Fi/MQTT/HTTP.  
+- **Wireless Water-Level Monitoring**  
+  - Ultrasonic sensing at the transmitter, with on-MCU filtering to reduce noise.  
+  - nRF300 RF module for reliable transmission up to ~50–100 meters (line-of-sight).
 
-Feel free to add or remove bullet points to match your project’s actual capabilities.
+- **Five-Level LED Indicator**  
+  - Receiver lights up a bank of five LEDs indicating approximate percentage-full of the tank.
 
----
+- **Automated Pump Control**  
+  - Relay‐driven pump ON/OFF based on configurable “low‐level” and “high‐level” thresholds.  
+  - Hysteresis prevents rapid on/off switching (e.g., pump turns OFF once level > 80%, turns ON once level < 20%).
 
-## Hardware Requirements
+- **Low Power Consumption**  
+  - Transmitter MCU sleeps between measurements to conserve battery (optional, see configuration).  
+  - Receiver MCU only wakes briefly on valid RF packets.
 
-- **Microcontroller Board** (e.g., Arduino UNO, ESP8266, ESP32, Raspberry Pi)  
-- **Water Pump** (e.g., 12 V DC submersible pump or AC pump + appropriate relay/driver)  
-- **Relay Module** (to switch pump power)  
-- **Sensor(s)**:  
-  - Water-level sensor (e.g., float switch, ultrasonic sensor) _and/or_  
-  - Soil-moisture sensor (if used for irrigation)  
-- **Power Supply**:  
-  - For microcontroller (e.g., 5 V USB supply, 3.3 V regulator)  
-  - For pump (e.g., 12 V DC adapter or AC mains, as applicable)  
-- **Breadboard / PCB** (optional, for prototyping)  
-- **Connecting Wires** and **jumper cables**  
-- **Indicator LED** (optional)  
-- **Push Button** or **Switch** (optional, for manual override)  
-
-_Adjust this list to exactly match the components in your repository._
+- **Modular Design**  
+  - Separate transmitter and receiver codebases (e.g., `transmitter.ino` and `receiver.ino`).  
+  - Supports easy replacement of ultrasonic sensor, RF module, or microcontroller.
 
 ---
 
-## Software Requirements
+## System Architecture
 
-- **Arduino IDE** (v1.8.13 or later) _or_ **PlatformIO**  
-- **Library Dependencies** (if any, e.g.):  
-  - `DHT.h` (for DHT-series sensors)  
-  - `Adafruit_Sensor.h`  
-  - `ESP8266WiFi.h` / `ESP32 WiFi` (if using Wi-Fi features)  
-  - `PubSubClient.h` (for MQTT)  
-  - `NewPing.h` (for ultrasonic sensor)  
-- **Python 3.x** (if there are any supplementary scripts)  
-- **Git** (to clone this repository)  
-
-List out any additional libraries, versions, or tools that must be installed before compiling/flashing.
-
----
-
-## Wiring Diagram
-
-Below is a schematic overview. Adjust pin numbers to match your code’s definitions.
-
+```text
+┌────────────────────────┐      ┌────────────────────────┐      ┌───────────────┐
+│    Transmitter Unit    │      │    Wireless Link       │      │  Receiver Unit│
+│  (e.g., Arduino Nano)  │──────▶ nRF300 (TX @ 433/868MHz) ───▶│  (e.g., Arduino UNO) │
+│                        │      │    nRF300 (RX)         │      │               │
+│  ┌──────────────────┐  │      └────────────────────────┘      │               │
+│  │ Ultrasonic Sensor│  │                                      │ ┌───────────┐ │
+│  │    (HC-SR04)     │  │                                      │ │LED Bank   │ │
+│  └──────────────────┘  │                                      │ │(5× LEDs)  │ │
+│   (Filters readings   │                                      │ └───────────┘ │
+│    via moving-average)│                                      │     │         │
+│                       │                                      │ ┌───────────┐ │
+│  ┌──────────────────┐ │                                      │ │ Relay     │ │
+│  │      MCU         │ │                                      │ │ Module    │ │
+│  │ (ATmega328P, etc.)│                                      │ └───────────┘ │
+│  └──────────────────┘ │                                      └────────────────┘
+└────────────────────────┘
