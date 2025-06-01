@@ -87,7 +87,7 @@ By separating sensing and actuation into two modules, the system avoids running 
 │  │ (ATmega328P, etc.)│                                      │ └───────────┘ │
 │  └──────────────────┘ │                                      └────────────────┘
 └────────────────────────┘
-
+````
 
 ## Hardware Requirements
 
